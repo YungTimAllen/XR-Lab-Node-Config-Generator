@@ -4,7 +4,7 @@ This is some of the absolute worst code I have ever written. I'm ashamed to shar
 
 **This Python script prompts for a router node number (n_id) and a comma-delimited string of other n_ids that this node attaches too**
 
-Then, INE-style config is generated. This script assumes that a single physical link is connected to a central dot1q switch, and that all rotuer connections are dot1q subinterfaces. There is a specific focus on spinning up an MPLS TE ready XR lab very quickly.
+Then, INE-style config is generated. This script assumes that a single physical link is connected to a central dot1q switch, and that all router connections are dot1q subinterfaces. There is a specific focus on spinning up an MPLS TE ready XR lab very quickly.
 
 ## Example usage
 
