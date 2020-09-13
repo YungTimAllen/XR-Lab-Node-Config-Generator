@@ -3,6 +3,8 @@
 Python frontend to a prewritten Jinja2 template. Creates a data-structure from Argparse'd values and feeds Jinja. 
 
 Template is "INE-Like" whereby all core node interconnects are sub-interfaces named {lower}{higher} and addressed as 10.{lower}.{higher}.{self} (e.g. R2's link to R4: 10.2.4.2/24)
+
+The motivation and purpose of this template is to create a working underlay for SP topologies extremely quickly. This template also enables RSVP-TE fundamentals.
 ```
 usage: xr-lab-gen.py [-h] [--uplink UPLINK] node_num node_nei_str
 
