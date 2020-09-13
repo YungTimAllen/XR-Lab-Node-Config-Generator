@@ -15,6 +15,8 @@ optional arguments:
 ## Example usage
 
 ```
+$ ./xr-lab-gen.py 7 3,4,5
+
 hostname R7
 logging console debug
 mpls oam
