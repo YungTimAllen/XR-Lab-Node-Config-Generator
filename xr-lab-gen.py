@@ -13,8 +13,6 @@ def main(args):
   d["Uplink"] = args.uplink if args.uplink else "Gi0/0/0/0"
   d["NodePeers"] = [int(n) for n in args.node_nei_str.split(',')]
 
-  print(args.uplink)
-
   pwd = os.path.dirname(os.path.abspath(__file__))
   env = Environment(loader=FileSystemLoader(pwd))
 
