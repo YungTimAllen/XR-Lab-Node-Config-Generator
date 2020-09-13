@@ -2,7 +2,9 @@
 
 Python frontend to a prewritten Jinja2 template. Creates a data-structure from Argparse'd values and feeds Jinja. 
 
-Template is "INE-Like" whereby all core node interconnects are sub-interfaces named {lower}{higher} and addressed as 10.{lower}.{higher}.{self} (e.g. R2's link to R4: 10.2.4.2/24)
+Template is "INE-Like" whereby all core node interconnects are sub-interfaces connecting to a switch, tagged as {lower}{higher} and addressed as 10.{lower}.{higher}.{self} (e.g. R2's link to R4: 10.2.4.2/24)
+
+![Image of Example Topology](https://i.imgur.com/dzIfi3Q.png)
 
 The motivation and purpose of this template is to create a working underlay for SP topologies extremely quickly. This template also enables RSVP-TE fundamentals.
 ```
@@ -21,9 +23,8 @@ optional arguments:
 ## Example usage
 
 ```
-$ ./xr-lab-gen.py 7 3,2,14
-
-hostname R7
+$ ./xr-lab-gen.py 2 1,3,4
+hostname R2
 logging console debug
 mpls oam
  exit
@@ -31,8 +32,8 @@ line con 0
  exec-timeout 0
  exit
 int lo0
- ipv4 address 2.90.0.7/32
- ipv6 address 2001:db8::2.90.0.7/128
+ ipv4 address 2.90.0.2/32
+ ipv6 address 2001:db8::2.90.0.2/128
  exit
 
 mpls ldp
@@ -42,31 +43,31 @@ interface g0/0/0/0
  no shut
  exit
 
-interface Gi0/0/0/0.37
+interface Gi0/0/0/0.12
+ description Link to R1
+ encapsulation dot1q 12
+ ipv4 address 10.1.2.2/24
+ ipv6 address 2001:db8:1:2::2/64
+ exit
+
+interface Gi0/0/0/0.23
  description Link to R3
- encapsulation dot1q 37
- ipv4 address 10.3.7.7/24
- ipv6 address 2001:db8:3:7::7/64
+ encapsulation dot1q 23
+ ipv4 address 10.2.3.2/24
+ ipv6 address 2001:db8:2:3::2/64
  exit
 
-interface Gi0/0/0/0.27
- description Link to R2
- encapsulation dot1q 27
- ipv4 address 10.2.7.7/24
- ipv6 address 2001:db8:2:7::7/64
- exit
-
-interface Gi0/0/0/0.714
- description Link to R14
- encapsulation dot1q 714
- ipv4 address 10.7.14.7/24
- ipv6 address 2001:db8:7:14::7/64
+interface Gi0/0/0/0.24
+ description Link to R4
+ encapsulation dot1q 24
+ ipv4 address 10.2.4.2/24
+ ipv6 address 2001:db8:2:4::2/64
  exit
 
 
 router isis 1
  log-adjacency-changes
- net 49.1234.0020.9000.0007.00
+ net 49.1234.0020.9000.0002.00
  is-type level-2-only
  address-family ipv4 unicast
   mpls traffic-eng router-id Loopback0
@@ -74,21 +75,21 @@ router isis 1
   metric-style wide
   exit
 
- interface Gi0/0/0/0.37
+ interface Gi0/0/0/0.12
   point-to-point
   suppressed
    address-family ipv4 unicast
     exit
    exit
 
- interface Gi0/0/0/0.27
+ interface Gi0/0/0/0.23
   point-to-point
   suppressed
    address-family ipv4 unicast
     exit
    exit
 
- interface Gi0/0/0/0.714
+ interface Gi0/0/0/0.24
   point-to-point
   suppressed
    address-family ipv4 unicast
@@ -102,29 +103,27 @@ router isis 1
 
 
 mpls traffic-eng
- interface Gi0/0/0/0.37
-  administrative 128
 
-mpls traffic-eng
- interface Gi0/0/0/0.27
-  administrative 128
+ interface Gi0/0/0/0.12
+  admin-weight 128
 
-mpls traffic-eng
- interface Gi0/0/0/0.714
-  administrative 128
+ interface Gi0/0/0/0.23
+  admin-weight 128
+
+ interface Gi0/0/0/0.24
+  admin-weight 128
 
  root
 
 
 rsvp
- interface Gi0/0/0/0.37
+
+ interface Gi0/0/0/0.12
   bandwidth 1000000
 
-rsvp
- interface Gi0/0/0/0.27
+ interface Gi0/0/0/0.23
   bandwidth 1000000
 
-rsvp
- interface Gi0/0/0/0.714
+ interface Gi0/0/0/0.24
   bandwidth 1000000
 ```
