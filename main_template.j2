@@ -1,0 +1,62 @@
+hostname R{{NodeId}}
+logging console debug
+mpls oam
+ exit
+line con 0
+ exec-timeout 0
+ exit
+int lo0
+ ipv4 address 2.90.0.{{NodeId}}/32
+ ipv6 address 2001:db8::2.90.0.{{NodeId}}/128
+ exit
+
+mpls ldp
+ exit
+
+interface g0/0/0/0
+ no shut
+ exit
+{% for peer in NodePeers %}
+interface {{Uplink}}.{{ [NodeId, peer]|min }}{{[NodeId, peer]|max}}
+ description Link to R{{peer}}
+ encapsulation dot1q {{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
+ ipv4 address 10.{{ [NodeId, peer]|min }}.{{ [NodeId, peer]|max }}.{{NodeId}}/24
+ ipv6 address 2001:db8:{{ [NodeId, peer]|min }}:{{ [NodeId, peer]|max }}::{{NodeId}}/64
+ exit
+{% endfor %}
+
+router isis 1
+ log-adjacency-changes
+ net 49.1234.0020.9000.00{{ '%02d' % (NodeId) }}.00
+ is-type level-2-only
+ address-family ipv4 unicast
+  mpls traffic-eng router-id Loopback0
+  mpls traffic-eng level-2
+  metric-style wide
+  exit
+{% for peer in NodePeers %}
+ interface {{Uplink}}.{{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
+  point-to-point
+  suppressed
+   address-family ipv4 unicast
+    exit
+   exit
+{% endfor %}
+ interface loopback0
+  passive
+   address-family ipv4 unicast
+ root
+
+{% for peer in NodePeers %}
+mpls traffic-eng
+ interface {{Uplink}}.{{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
+  administrative 128
+{% endfor %}
+ root
+
+{% for peer in NodePeers %}
+rsvp
+ interface {{Uplink}}.{{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
+  bandwidth 1000000
+{% endfor %}
+
