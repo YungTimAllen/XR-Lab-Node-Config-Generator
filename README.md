@@ -8,17 +8,19 @@ Template is "INE-Like" whereby all core node interconnects are sub-interfaces co
 
 The motivation and purpose of this template is to create a working underlay for SP topologies extremely quickly. This template also enables RSVP-TE fundamentals.
 ```
-usage: xr-lab-gen.py [-h] [--uplink UPLINK] node_num node_nei_str
+usage: xr-lab-gen.py [-h] [--uplink UPLINK] [--template TEMPLATE]
+                     node_num node_nei_str
 
 INE-Style XRv Config Generator for Large Labs
 
 positional arguments:
-  node_num         Numerical ID of this node.
-  node_nei_str     Comma-delimited list of nodes this node attaches to.
+  node_num             Numerical ID of this node.
+  node_nei_str         Comma-delimited list of nodes this node attaches to.
 
 optional arguments:
-  -h, --help       show this help message and exit
-  --uplink UPLINK  Physical uplink from which to create subinterfaces
+  -h, --help           show this help message and exit
+  --uplink UPLINK      Physical uplink from which to create subinterfaces
+  --template TEMPLATE  J2 template to use (From pwd)
 ```
 ## Example usage
 
