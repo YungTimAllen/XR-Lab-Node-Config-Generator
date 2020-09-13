@@ -1,4 +1,10 @@
 # xr-lab-gen 
+
+Python frontend to a prewritten Jinja2 template. Creates a data-structure from Argparse'd values and feeds Jinja. 
+
+Template is "INE-Like" whereby all core node interconnects are sub-interfaces named {lower}{higher} and addressed as 10.{lower}.{higher}.{self} (e.g. R2's link to R4: 10.2.4.2/24)
+
+The motivation and purpose of this template is to create a working underlay for SP topologies extremely quickly. This template also enables RSVP-TE fundamentals.
 ```
 usage: xr-lab-gen.py [-h] [--uplink UPLINK] node_num node_nei_str
 
@@ -15,6 +21,8 @@ optional arguments:
 ## Example usage
 
 ```
+$ ./xr-lab-gen.py 7 3,2,14
+
 hostname R7
 logging console debug
 mpls oam
@@ -41,18 +49,18 @@ interface Gi0/0/0/0.37
  ipv6 address 2001:db8:3:7::7/64
  exit
 
-interface Gi0/0/0/0.47
- description Link to R4
- encapsulation dot1q 47
- ipv4 address 10.4.7.7/24
- ipv6 address 2001:db8:4:7::7/64
+interface Gi0/0/0/0.27
+ description Link to R2
+ encapsulation dot1q 27
+ ipv4 address 10.2.7.7/24
+ ipv6 address 2001:db8:2:7::7/64
  exit
 
-interface Gi0/0/0/0.57
- description Link to R5
- encapsulation dot1q 57
- ipv4 address 10.5.7.7/24
- ipv6 address 2001:db8:5:7::7/64
+interface Gi0/0/0/0.714
+ description Link to R14
+ encapsulation dot1q 714
+ ipv4 address 10.7.14.7/24
+ ipv6 address 2001:db8:7:14::7/64
  exit
 
 
@@ -73,14 +81,14 @@ router isis 1
     exit
    exit
 
- interface Gi0/0/0/0.47
+ interface Gi0/0/0/0.27
   point-to-point
   suppressed
    address-family ipv4 unicast
     exit
    exit
 
- interface Gi0/0/0/0.57
+ interface Gi0/0/0/0.714
   point-to-point
   suppressed
    address-family ipv4 unicast
@@ -98,11 +106,11 @@ mpls traffic-eng
   administrative 128
 
 mpls traffic-eng
- interface Gi0/0/0/0.47
+ interface Gi0/0/0/0.27
   administrative 128
 
 mpls traffic-eng
- interface Gi0/0/0/0.57
+ interface Gi0/0/0/0.714
   administrative 128
 
  root
@@ -113,10 +121,10 @@ rsvp
   bandwidth 1000000
 
 rsvp
- interface Gi0/0/0/0.47
+ interface Gi0/0/0/0.27
   bandwidth 1000000
 
 rsvp
- interface Gi0/0/0/0.57
+ interface Gi0/0/0/0.714
   bandwidth 1000000
 ```
