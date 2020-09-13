@@ -47,15 +47,17 @@ router isis 1
    address-family ipv4 unicast
  root
 
-{% for peer in NodePeers %}
+
 mpls traffic-eng
+{% for peer in NodePeers %}
  interface {{Uplink}}.{{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
   administrative 128
 {% endfor %}
  root
 
-{% for peer in NodePeers %}
+
 rsvp
+{% for peer in NodePeers %}
  interface {{Uplink}}.{{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
   bandwidth 1000000
 {% endfor %}
