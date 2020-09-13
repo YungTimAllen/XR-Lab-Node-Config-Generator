@@ -35,6 +35,7 @@ interface {{Uplink}}.{{ [NodeId, peer]|min }}{{[NodeId, peer]|max}}
  ip rsvp bandwidth 950000
  ip router isis 1
  isis network point-to-point 
+ no isis advertise prefix
 {% endfor %}
 
 router isis 1
