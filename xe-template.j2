@@ -1,0 +1,49 @@
+hostname R{{NodeId}}
+
+mpls oam
+
+mpls traffic-eng tunnels
+mpls traffic-eng logging lsp path-errors
+mpls traffic-eng logging lsp reservation-errors
+mpls traffic-eng logging lsp preemption
+mpls traffic-eng logging lsp setups
+mpls traffic-eng logging lsp teardowns
+mpls traffic-eng logging tunnel lsp-switchover
+mpls traffic-eng logging tunnel lsp-selection
+
+line con 0
+ logging sync
+ exec-timeout 0
+ exit
+int lo0
+ ip address 2.90.0.{{NodeId}} 255.255.255.255
+ ipv6 address 2001:db8::2.90.0.{{NodeId}}/128
+ ip router isis 1
+ exit
+
+interface {{Uplink}}
+ no shut
+ exit
+{% for peer in NodePeers %}
+interface {{Uplink}}.{{ [NodeId, peer]|min }}{{[NodeId, peer]|max}}
+ description Link to R{{peer}}
+ encapsulation dot1q {{ [NodeId, peer]|min }}{{ [NodeId, peer]|max }}
+ ip address 10.{{ [NodeId, peer]|min }}.{{ [NodeId, peer]|max }}.{{NodeId}} 255.255.255.0
+ ipv6 address 2001:db8:{{ [NodeId, peer]|min }}:{{ [NodeId, peer]|max }}::{{NodeId}}/64
+ mpls traffic-eng tunnels
+ mpls traffic-eng administrative-weight 128
+ ip rsvp bandwidth 950000
+ ip router isis 1
+ isis network point-to-point 
+{% endfor %}
+
+router isis 1
+ log-adjacency-changes
+ net 49.1234.0020.9000.00{{ '%02d' % (NodeId) }}.00
+ is-type level-2-only
+ metric-style wide
+ mpls traffic-eng router-id Loopback0
+ mpls traffic-eng level-2
+ passive-interface lo0
+
+
